@@ -101,7 +101,7 @@ class Memory
 private:
     Memory()
     {
-        _CreateAttribute(DATA_BAG_HEIGHT, Data::eType::euint, (uint32_t)15);
+        _CreateAttribute(DATA_BAG_HEIGHT, Data::eType::efloat, (float)11.5);
         _CreateAttribute(DATA_SENSOR_POSITION, Data::eType::euint, (uint32_t)200);
         _CreateAttribute(DATA_BAG_NUMBER, Data::eType::euint, (uint32_t)0);
     }

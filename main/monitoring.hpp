@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ultrasoundsensor.hpp"
+#include "I_sensor.hpp"
 #include "memory/pers_mem.hpp"
 #include <vector>
 #include <algorithm>
@@ -8,9 +8,9 @@
 class BagStackComputing
 {
 public:
-    BagStackComputing(UltrasoundSensor &sensor, std::string id):
+    BagStackComputing(I_Sensor &sensor, std::string id):
         m_sensor(nullptr),
-        m_bagSizeCm(0),
+        m_bagSizeCm(0.0f),
         m_sensorPositionCm(0),
         m_previousBagNumber(0),
         m_validationCounter(0),
@@ -23,8 +23,8 @@ public:
     ~BagStackComputing(){}
 
 public:
-    inline uint16_t& GetBagSize(){ return m_bagSizeCm; }
-    inline void SetBagSize(uint16_t size){ m_bagSizeCm = size; }
+    inline float& GetBagSize(){ return m_bagSizeCm; }
+    inline void SetBagSize(float size){ m_bagSizeCm = size; }
     inline uint16_t& GetSensorPosition(){ return m_sensorPositionCm; }
     inline void SetSensorPosition(uint16_t size){ m_sensorPositionCm = size; }
     inline uint16_t& GetBagNumber(){ return m_bagNumber; }
@@ -42,7 +42,7 @@ public:
             return;
         }
 
-        uint16_t newBagNumber = (uint16_t)((float)(m_sensorPositionCm - measurementDeepthCm) / (float)m_bagSizeCm + 0.5f);
+        uint16_t newBagNumber = (uint16_t)((float)(m_sensorPositionCm - measurementDeepthCm) / m_bagSizeCm + 0.5f);
 
         m_validationCounter = (newBagNumber == m_previousBagNumber) ? m_validationCounter + 1 : 0;
         m_previousBagNumber = newBagNumber;
@@ -59,9 +59,9 @@ public:
     }
 
 private:
-    UltrasoundSensor* m_sensor;
+    I_Sensor* m_sensor;
 
-    uint16_t m_bagSizeCm;
+    float m_bagSizeCm;
     uint16_t m_sensorPositionCm;
 
     uint16_t m_previousBagNumber;
@@ -82,7 +82,7 @@ public:
     }
 private:
     Monitoring():
-        m_bagSizeCm(0),
+        m_bagSizeCm(0.0f),
         m_sensorPositionCm(0),
         m_bagNumber(0)
     {
@@ -110,7 +110,7 @@ public:
         if (xSemaphoreTake(mSemaphore, portMAX_DELAY))
         {
             m_bagNumber = memory.Get<uint16_t>(DATA_BAG_NUMBER);
-            m_bagSizeCm = memory.Get<uint16_t>(DATA_BAG_HEIGHT);
+            m_bagSizeCm = memory.Get<float>(DATA_BAG_HEIGHT);
             m_sensorPositionCm = memory.Get<uint16_t>(DATA_SENSOR_POSITION);
 
             xSemaphoreGive(mSemaphore);
@@ -155,7 +155,7 @@ public:
         }
 
         Memory &memory = Memory::GetMemory();
-        memory.Set<uint16_t>(DATA_BAG_HEIGHT, bagSizeCm);
+        memory.Set<float>(DATA_BAG_HEIGHT, bagSizeCm);
     }
     inline void UpdateSensorPosition(uint16_t sensorPositionCm)
     {
@@ -180,7 +180,7 @@ public:
 private:
     std::vector<BagStackComputing*> m_bagStacks;
 
-    uint16_t m_bagSizeCm;
+    float m_bagSizeCm;
     uint16_t m_sensorPositionCm;
     uint16_t m_bagNumber;
 };

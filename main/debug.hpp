@@ -47,12 +47,12 @@ public:
                 default: filter_str = "????"; break;
             }
 
-            printf("[%s][%s] : ", filter_str.c_str(), componant.c_str());
-
             va_list args;
             va_start(args, format);
-            static char buffer[256];
-            vsnprintf(buffer, sizeof(buffer), format, args);
+            char buffer[256];
+            
+            int len = snprintf(buffer, sizeof(buffer), "[%s][%s] : ", filter_str.c_str(), componant.c_str());            
+            vsnprintf(buffer + len, sizeof(buffer) - len, format, args);
             va_end(args);
 
             printf("%s\n", buffer);

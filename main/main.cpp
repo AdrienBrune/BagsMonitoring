@@ -11,13 +11,11 @@
 #include "monitoring.hpp"
 #include "freertos/queue.h"
 #include "led.hpp"
+#include "infraredsensor.hpp"
+#include "ultrasoundsensor.hpp"
 
-#define LED_PIN 26
-#define ZB_PIN 27
-#define GPIO_TRIGGER1_PIN 25
-#define GPIO_TRIGGER2_PIN 12
-#define GPIO_ECHO1_PIN 8
-#define GPIO_ECHO2_PIN 22
+#define LED_PIN 27
+#define ZB_PIN 26
 
 static QueueHandle_t gpio_evt_queue = NULL;
 typedef struct {
@@ -57,10 +55,10 @@ void _task_monitoring(void *pvParameters)
 {
     Monitoring &monitoring = Monitoring::GetInstance();
 
-    UltrasoundSensor sensor1((gpio_num_t)GPIO_TRIGGER1_PIN, (gpio_num_t)GPIO_ECHO1_PIN),
-                     sensor2((gpio_num_t)GPIO_TRIGGER2_PIN, (gpio_num_t)GPIO_ECHO2_PIN);
-    BagStackComputing stack1(sensor1, "stack1"),
-                      stack2(sensor2, "stack2");
+    // UltrasoundSensor sensor1((gpio_num_t)GPIO_TRIGGER1_PIN, (gpio_num_t)GPIO_ECHO1_PIN),
+    //                  sensor2((gpio_num_t)GPIO_TRIGGER2_PIN, (gpio_num_t)GPIO_ECHO2_PIN);
+    InfraredSensor sensor1({I2C_NUM_0, GPIO_NUM_12, GPIO_NUM_22}), sensor2({I2C_NUM_1, GPIO_NUM_10, GPIO_NUM_11});
+    BagStackComputing stack1(sensor1, "stack1"), stack2(sensor2, "stack2");
 
     sensor1.Init();
     sensor2.Init();
@@ -160,6 +158,8 @@ void _task_button(void *pvParameters)
 
 extern "C" void app_main(void)
 {
+    vTaskDelay(pdMS_TO_TICKS(4000));
+
     esp_err_t err = nvs_flash_init();
     if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND)
     {
@@ -191,5 +191,5 @@ extern "C" void app_main(void)
 
     xTaskCreate(_task_zigbee, "zigbee", 8124, NULL, 3, NULL);
     xTaskCreate(_task_monitoring, "monitoring", 4096, NULL, 2, NULL);
-    xTaskCreate(_task_button, "button", 4096, NULL, 1, NULL);
+    // xTaskCreate(_task_button, "button", 4096, NULL, 1, NULL);
 }

@@ -5,7 +5,7 @@
 #include "freertos/task.h"
 #include "esp_systick_etm.h"
 
-#define LOOP_DELAY_SEC 10 //120
+#define LOOP_DELAY_SEC 120
 
 void Monitoring::Process()
 {

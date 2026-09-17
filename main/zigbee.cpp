@@ -40,7 +40,7 @@ esp_zb_cluster_list_t* createClusterList()
     esp_zb_attribute_list_t *custom_cluster = esp_zb_zcl_attr_list_create(CUSTOM_CLUSTER_ID);
 
     Memory &memory = Memory::GetMemory();
-    int16_t default_bag_height = memory.Get<uint16_t>(DATA_BAG_HEIGHT);
+    float default_bag_height = memory.Get<float>(DATA_BAG_HEIGHT);
     int16_t default_sensor_pos = memory.Get<uint16_t>(DATA_SENSOR_POSITION);
     float default_bag_count  = (float)memory.Get<uint16_t>(DATA_BAG_NUMBER);
 
@@ -48,7 +48,7 @@ esp_zb_cluster_list_t* createClusterList()
     esp_zb_custom_cluster_add_custom_attr(
         custom_cluster,
         ATTR_BAG_HEIGHT_ID,
-        ESP_ZB_ZCL_ATTR_TYPE_S16,
+        ESP_ZB_ZCL_ATTR_TYPE_SINGLE,
         ESP_ZB_ZCL_ATTR_ACCESS_READ_WRITE,
         &default_bag_height
     );
