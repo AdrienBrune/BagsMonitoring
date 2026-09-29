@@ -3,7 +3,7 @@
 # 🔥 ESP32 Smart Pellet Bag Counter
 
 <p align="center">
-  <img src="./Preview/pellet_counter_cover.png" alt="Pellet Counter Cover" width="700" style="border-radius: 8px;" />
+  <img width="364" height="341" alt="image" src="https://github.com/user-attachments/assets/d4e8ff6c-9ebc-4495-95e6-1a24c7aaa75e" style="border-radius: 8px;" />
 </p>
 
 *A smart, automated inventory tracking system for pellet storage, powered by an ESP32, infrared distance sensors, and native Zigbee integration for Home Assistant.*
