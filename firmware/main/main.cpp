@@ -57,7 +57,7 @@ void _task_monitoring(void *pvParameters)
 
     // UltrasoundSensor sensor1((gpio_num_t)GPIO_TRIGGER1_PIN, (gpio_num_t)GPIO_ECHO1_PIN),
     //                  sensor2((gpio_num_t)GPIO_TRIGGER2_PIN, (gpio_num_t)GPIO_ECHO2_PIN);
-    InfraredSensor sensor1({I2C_NUM_0, GPIO_NUM_12, GPIO_NUM_22}), sensor2({I2C_NUM_1, GPIO_NUM_10, GPIO_NUM_11});
+    InfraredSensor sensor1({I2C_NUM_0, GPIO_NUM_22, GPIO_NUM_12}), sensor2({I2C_NUM_1, GPIO_NUM_11, GPIO_NUM_10});
     BagStackComputing stack1(sensor1, "stack1"), stack2(sensor2, "stack2");
 
     sensor1.Init();

@@ -1,6 +1,9 @@
 #include "infraredsensor.hpp"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "driver/gpio.h"
+
+#define RED_PIN (gpio_num_t)27
 
 #define CHECK_VL53L1X_ERROR(function) \
     do { \
@@ -19,6 +22,9 @@
 
 void InfraredSensor::Init()
 {
+    gpio_set_direction(RED_PIN, GPIO_MODE_OUTPUT);
+    gpio_set_level(RED_PIN, 0);
+
     i2c_master_bus_config_t busConfig = {
         .i2c_port = m_i2cDesc.port,
         .sda_io_num = m_i2cDesc.sda,
@@ -99,6 +105,7 @@ uint16_t InfraredSensor::GetDistance()
     if (!m_devHandler)
     {
         DebugLogger::GetInstance().print(DEBUG_SENSOR, DEBUG_WARNING, "device has not been initialized");
+        gpio_set_level(RED_PIN, 1);
         return 0;
     }
 
@@ -122,11 +129,13 @@ uint16_t InfraredSensor::GetDistance()
         VL53L1X_ClearInterrupt(m_devId);
         uint16_t distance_cm = (distance_mm + 5) / 10;
         DebugLogger::GetInstance().print(DEBUG_SENSOR, DEBUG_INFO, "Distance measured: %d cm", distance_cm);
+        gpio_set_level(RED_PIN, 0);
         return distance_cm;
     }
     else
     {
         DebugLogger::GetInstance().print(DEBUG_SENSOR, DEBUG_ERROR, "Distance data not ready (timeout)");
+        gpio_set_level(RED_PIN, 1);
         return 0;
     }
 }
